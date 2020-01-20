@@ -86,7 +86,7 @@ given the optional 'now' argument.
 * pv
 * python
 * unzip
-* beenoded, beenode-cli - version 12 or greater to update
+* beenoded, beenode-cli - version 8 or greater to update
 
 # Screencaps
 
