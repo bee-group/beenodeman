@@ -11,7 +11,7 @@ DASH wallet/daemon management utilities - version 0.1.28
 To install beenodeman do:
 
     sudo apt-get install python git unzip pv
-    cd ~ && git clone https://github.com/moocowmoo/beenodeman
+    cd ~ && git clone https://github.com/bee-group/beenodeman
 
 To update your existing version 12 32/64bit linux beenode wallet to the latest
 beenoded, do:
