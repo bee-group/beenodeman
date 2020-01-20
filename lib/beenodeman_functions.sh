@@ -318,7 +318,7 @@ _find_beenode_directory() {
 
 
 _check_beenodeman_updates() {
-    GITHUB_BEENODEMAN_VERSION=$( $curl_cmd https://raw.githubusercontent.com/bee-group/beenodeman/master/VERSION )
+    GITHUB_BEENODEMAN_VERSION=$( $curl_cmd https://raw.githubusercontent.com/bee-group/beenodeman/update/VERSION )
     if [ ! -z "$GITHUB_BEENODEMAN_VERSION" ] && [ "$BEENODEMAN_VERSION" != "$GITHUB_BEENODEMAN_VERSION" ]; then
         echo -e "\n"
         echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_BEENODEMAN_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
