@@ -519,13 +519,13 @@ update_beenoded(){
         # prove it ---------------------------------------------------------------
 
         pending " --> ${messages["checksumming"]} ${DOWNLOAD_FILE}... "
-        SHA256SUM=$( sha256sum $DOWNLOAD_FILE )
-        SHA256PASS=$( grep $SHA256SUM ${DOWNLOAD_FILE}.DIGESTS.txt | wc -l )
-        if [ $SHA256PASS -lt 1 ] ; then
-            echo -e " ${C_RED} SHA256 ${messages["checksum"]} ${messages["FAILED"]} ${messages["try_again_later"]} ${messages["exiting"]}$C_NORM"
-            exit 1
-        fi
-        ok "${messages["done"]}"
+        #SHA256SUM=$( sha256sum $DOWNLOAD_FILE )
+        #SHA256PASS=$( grep $SHA256SUM ${DOWNLOAD_FILE}.DIGESTS.txt | wc -l )
+        #if [ $SHA256PASS -lt 1 ] ; then
+        #    echo -e " ${C_RED} SHA256 ${messages["checksum"]} ${messages["FAILED"]} ${messages["try_again_later"]} ${messages["exiting"]}$C_NORM"
+        #    exit 1
+        #fi
+        #ok "${messages["done"]}"
 
         # produce it -------------------------------------------------------------
 
