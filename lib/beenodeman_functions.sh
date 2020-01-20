@@ -748,15 +748,15 @@ install_beenoded(){
     # prove it ---------------------------------------------------------------
 
     pending " --> ${messages["checksumming"]} ${DOWNLOAD_FILE}... "
-    SHA256SUM=$( sha256sum $DOWNLOAD_FILE )
+    #SHA256SUM=$( sha256sum $DOWNLOAD_FILE )
     #MD5SUM=$( md5sum $DOWNLOAD_FILE )
-    SHA256PASS=$( grep $SHA256SUM ${DOWNLOAD_FILE}.DIGESTS.txt | wc -l )
-    #MD5SUMPASS=$( grep $MD5SUM ${DOWNLOAD_FILE}.DIGESTS.txt | wc -l )
-    if [ $SHA256PASS -lt 1 ] ; then
-        echo -e " ${C_RED} SHA256 ${messages["checksum"]} ${messages["FAILED"]} ${messages["try_again_later"]} ${messages["exiting"]}$C_NORM"
-
-        exit 1
-    fi
+    #SHA256PASS=$( grep $SHA256SUM ${DOWNLOAD_FILE}.DIGESTS.txt | wc -l )
+    ##MD5SUMPASS=$( grep $MD5SUM ${DOWNLOAD_FILE}.DIGESTS.txt | wc -l )
+    #if [ $SHA256PASS -lt 1 ] ; then
+    #    echo -e " ${C_RED} SHA256 ${messages["checksum"]} ${messages["FAILED"]} ${messages["try_again_later"]} ${messages["exiting"]}$C_NORM"
+	#
+    #    exit 1
+    #fi
     #if [ $MD5SUMPASS -lt 1 ] ; then
     #    echo -e " ${C_RED} MD5 ${messages["checksum"]} ${messages["FAILED"]} ${messages["try_again_later"]} ${messages["exiting"]}$C_NORM"
     #    exit 1
