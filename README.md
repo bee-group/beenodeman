@@ -1,6 +1,6 @@
 # beenodeman
 
-DASH wallet/daemon management utilities - version 0.1.28
+BEENODE wallet/daemon management utilities - version 0.1.28
 
 * This script installs, updates, and manages single-user beenode daemons and wallets
 * It is currently only compatible with 32/64 bit linux.
@@ -92,24 +92,20 @@ given the optional 'now' argument.
 
 ### install
 
-<img src="https://raw.githubusercontent.com/bee-group/beenodeman/master/screencaps/beenodeman_0.1-install.png">
+<img src="https://raw.githubusercontent.com/bee-group/beenodeman/update/screencaps/beenodeman_0.1-install.png">
 
 ### update
 
-<img src="https://raw.githubusercontent.com/bee-group/beenodeman/master/screencaps/beenodeman_0.1-update.png">
+<img src="https://raw.githubusercontent.com/bee-group/beenodeman/update/screencaps/beenodeman_0.1-update.png">
 
 ### reinstall
 
-<img src="https://raw.githubusercontent.com/bee-group/beenodeman/master/screencaps/beenodeman_0.1-reinstall.png">
+<img src="https://raw.githubusercontent.com/bee-group/beenodeman/update/screencaps/beenodeman_0.1-reinstall.png">
 
 ### restart
 
-<img src="https://raw.githubusercontent.com/bee-group/beenodeman/master/screencaps/beenodeman_0.1-restart.png">
+<img src="https://raw.githubusercontent.com/bee-group/beenodeman/update/screencaps/beenodeman_0.1-restart.png">
 
 ### status
 
-<img src="https://raw.githubusercontent.com/bee-group/beenodeman/master/screencaps/beenodeman_0.1-status.png">
-
-# Contact
-
-Email me at bee-group@beenode.ru or submit a pull request.
+<img src="https://raw.githubusercontent.com/bee-group/beenodeman/update/screencaps/beenodeman_0.1-status.png">
