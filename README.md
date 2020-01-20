@@ -13,7 +13,7 @@ To install beenodeman do:
     sudo apt-get install python git unzip pv
     cd ~ && git clone https://github.com/bee-group/beenodeman
 
-To update your existing version 12 32/64bit linux beenode wallet to the latest
+To update your existing version 8 32/64bit linux beenode wallet to the latest
 beenoded, do:
 
     beenodeman/beenodeman update
