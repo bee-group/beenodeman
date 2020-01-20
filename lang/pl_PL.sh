@@ -1,0 +1,132 @@
+
+#echo "pl_PL"
+
+messages=(
+
+    ["beenodeman_version"]="wersja beenodemana"
+    ["gathering_info"]="zbieranie informacji, proszę czekać... "
+    ["done"]="ZROBIONE!"
+    ["exiting"]="Wyjście."
+
+    ["days"]="dni"
+    ["hours"]="godzin"
+    ["mins"]="minut"
+    ["secs"]="sekund"
+
+    ["YES"]="TAK"
+    ["NO"]="NIE"
+    ["FAILED"]="NIEUDANE!"
+
+    ["prompt_are_you_sure"]="Jestes pewny?"
+    ["prompt_ipv4_ipv6"]="Host posiada adresy ipv4 oraz ipv6.\n - Użyć ipv6 do instalacji?"
+
+    ["download"]="pobierz"
+    ["downloading"]="pobieranie"
+    ["creating"]="tworzenie"
+    ["checksum"]="sprawdzanie"
+    ["checksumming"]="sprawdzanie sum kontrolnych"
+    ["unpacking"]="rozpakowywanie"
+    ["stopping"]="zatrzymywanie"
+    ["removing_old_version"]="Usuwanie starej wersji... "
+    ["please_wait"]="Proszę czekać... "
+    ["try_again_later"]="Spróbuj ponownie poźniej."
+    ["launching"]="Uruchamianie"
+    ["bootstrapping"]="Bootstrapping"
+    ["unzipping"]="Unzipping"
+    ["waiting_for_beenoded_to_respond"]="Czekam na odpowiedź beenoded..."
+    ["deleting_cache_files"]="Usuwanie plików cache, debug.log... "
+    ["starting_beenoded"]="Uruchamianie beenoded... "
+
+    ["err_downloading_file"]="błąd podczas pobierania pliku"
+    ["err_tried_to_get"]="próbowano pobrać"
+    ["err_no_pkg_mgr"]="nie można znaleźć platformy/menadżera pakietów"
+    ["err_missing_dependency"]="brakujące zależności:"
+    ["err_unknown_platform"]="nieznana platforma:"
+    ["err_beenodeman_supports"]="beenodeman obecnie wspiera tylko 32/64bit linux"
+    ["err_could_not_get_version"]="Nie można znaleźć najnowszej wersji z"
+    ["err_failed_ip_resolve"]="nie udało się uzyskac publicznego IP. Probuje ponownie... "
+
+    ["newer_beenode_available"]="dostępna jest nowsza wersja beenode."
+    ["successfully_upgraded"]="beenode pomyślnie zaktualizowany do wersji"
+    ["successfully_installed"]="zainstalowano pomyślnie!"
+    ["installed_in"]="Zainstalowano w"
+    ["beenode_version"]="wersja beenode"
+    ["is_not_uptodate"]="nie jest aktualna."
+    ["is_uptodate"]="jest aktualna."
+    ["preexisting_dir"]="znaleziono istniejący katalog"
+    ["run_reinstall"]="Uruchom 'beenodeman reinstall' zeby nadpisac."
+    ["reinstall_to"]="przeinstalowac"
+    ["and_install_to"]="i zainstaluj do"
+
+    ["exec_found_in_system_dir"]="znaleziono pliki wykonywalne beenode w"
+    ["run_beenodeman_as_root"]=". Uruchom beenodeman jako root (komenda sudo beenodeman) aby kontynuować."
+    ["beenoded_not_found"]="nie znaleziono beenoded w"
+    ["beenodecli_not_found"]="nie znaleziono beenode-cli w"
+    ["beenodecli_not_found_in_cwd"]="nie znaleziono beenode-cli w obecnym katalogu"
+
+    ["sync_to_github"]="czy chcesz zsynchronizowac beenodemana z githubem?"
+
+    ["usage"]="UŻYCIE"
+    ["commands"]="KOMENDY"
+    ["usage_title"]="instaluje, aktualizuje i zarządza portfelami oraz demonami beenode"
+    ["usage_install_description"]="tworzy świeżą instalację i uruchamia beenoded"
+    ["usage_update_description"]="aktualizuje beenoded do najnowszej wersji i uruchamia ponownie (patrz ponizej)"
+    ["usage_restart_description"]="restartuje beenoded i usuwa:"
+    ["usage_restart_description_now"]="zapyta użytkownika jeśli nie użyto argumentu \"now\""
+    ["usage_status_description"]="przegląda zasoby lokalne i sieciowe oraz wyświetla aktualny status"
+    ["usage_sync_description"]="aktualizuje beenodemana do najnowszej wersji z github"
+    ["usage_branch_description"]="zmień beenodemana na wersję experymentalną z github"
+    ["usage_vote_description"]="oddaje glos masternoda w ramach propozycji budżetowych"
+    ["usage_reinstall_description"]="nadpisuje beenode do najnowszej wersji i uruchamia ponownie (patrz ponizej)"
+    ["usage_version_description"]="wyświetla numer wersji beenodemana"
+
+
+    ["to_enable_masternode"]="Aby uruchomić masternoda,"
+    ["uncomment_conf_lines"]="wyczyść i skonfiguruj linie poleceń w :"
+    ["then_run"]="wtedy wykonaj:"
+
+    ["quit_uptodate"]="Zaktualizowane."
+
+    ["requires_updating"]="wymaga aktualizacji. Najnowsza wersja:"
+    ["requires_sync"]="Wykonaj 'beenodeman sync' ręcznie, lub wybierz jedną z opcji poniżej."
+
+    ["no_forks_detected"]="nie wykryto forków"
+
+    # space aligned strings. pay attention to spaces!
+    ["currnt_version"]="    obecna wersja: "
+    ["latest_version"]=" najnowsza wersja: "
+
+    ["status_hostnam"]="  nazwa hosta                        : "
+    ["status_uptimeh"]="  czas pracy hosta/średnie zużycie   : "
+    ["status_beenodedip"]="  przypisany adres IP                : "
+    ["status_beenodedve"]="  wersja beenoded                       : "
+    ["status_uptodat"]="  beenoded zauktualizowany              : "
+    ["status_running"]="  beenoded uruchomiony                  : "
+    ["status_uptimed"]="  czas pracy beenoded                   : "
+    ["status_drespon"]="  beenoded odpowiada (rpc)              : "
+    ["status_dlisten"]="  beenoded nasłuchuje (ip)              : "
+    ["status_dconnec"]="  beenoded połączony (peers)            : "
+    ["status_dportop"]="  otwarty port beenoded                 : "
+    ["status_dconcnt"]="  liczba połączeń beenoded              : "
+    ["status_dblsync"]="  zsynchronizowany beenoded             : "
+    ["status_dbllast"]="  ostatni blok (lokalny beenoded)       : "
+    ["status_webchai"]="               (chainz)              : "
+    ["status_webdark"]="               (beenode.org)            : "
+    ["status_webbeenode"]="               (beenodewhale)           : "
+    ["status_webmast"]="               (masternode.me)       : "
+    ["status_dcurdif"]="  aktualna trudność wydobycia        : "
+    ["status_mncount"]="  liczba masternodów                 : "
+    ["status_mnstart"]="  masternod uruchomiony              : "
+    ["status_mnvislo"]="  masternod wiczoczny (lokalny)      : "
+    ["status_mnvisni"]="  masternod wiczoczny (ninja)        : "
+    ["status_mnaddre"]="  adres twojego masternoda           : "
+    ["status_mnfundt"]="  ID transakcji fundującej noda      : "
+    ["status_mnqueue"]="  pozycja w kolejce                  : "
+    ["status_mnlastp"]="  ostatnia otrzymana płatność        : "
+    ["status_mnbalan"]="  saldo masternoda                   : "
+
+    # do not translate, leave empty, overrides english sentence usage
+    ["ago"]=""
+    ["found"]=""
+
+)
