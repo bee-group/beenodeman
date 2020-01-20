@@ -25,16 +25,16 @@ if [ -t 1 ] || [ ! -z "$FORCE_COLOR" ] ; then
 fi
 
 
-GITHUB_API_DASH="https://api.github.com/repos/bee-group/beenode"
+GITHUB_API_BEENODE="https://api.github.com/repos/bee-group/beenode"
 
-DASHD_RUNNING=0
-DASHD_RESPONDING=0
-DASHMAN_VERSION=$(cat $DASHMAN_GITDIR/VERSION)
-DASHMAN_CHECKOUT=$(GIT_DIR=$DASHMAN_GITDIR/.git GIT_WORK_TREE=$DASHMAN_GITDIR git describe --dirty | sed -e "s/^.*-\([0-9]\+-g\)/\1/" )
-if [ "$DASHMAN_CHECKOUT" == "v"$DASHMAN_VERSION ]; then
-    DASHMAN_CHECKOUT=""
+BEENODED_RUNNING=0
+BEENODED_RESPONDING=0
+BEENODEMAN_VERSION=$(cat $BEENODEMAN_GITDIR/VERSION)
+BEENODEMAN_CHECKOUT=$(GIT_DIR=$BEENODEMAN_GITDIR/.git GIT_WORK_TREE=$BEENODEMAN_GITDIR git describe --dirty | sed -e "s/^.*-\([0-9]\+-g\)/\1/" )
+if [ "$BEENODEMAN_CHECKOUT" == "v"$BEENODEMAN_VERSION ]; then
+    BEENODEMAN_CHECKOUT=""
 else
-    DASHMAN_CHECKOUT=" ("$DASHMAN_CHECKOUT")"
+    BEENODEMAN_CHECKOUT=" ("$BEENODEMAN_CHECKOUT")"
 fi
 
 [ -z "$CACHE_EXPIRE" ] && CACHE_EXPIRE=5
@@ -47,7 +47,7 @@ CACHE_DIR=/tmp/beenodeman_cache
 mkdir -p $CACHE_DIR
 chmod 700 $CACHE_DIR
 
-curl_cmd="timeout 7 curl -k -s -L -A beenodeman/$DASHMAN_VERSION"
+curl_cmd="timeout 7 curl -k -s -L -A beenodeman/$BEENODEMAN_VERSION"
 function cached_cmd() {
     cmd=""
     whitespace="[[:space:]]"
@@ -299,7 +299,7 @@ _find_beenode_directory() {
         exit 1
     fi
 
-    DASH_CLI="$INSTALL_DIR/beenode-cli"
+    BEENODE_CLI="$INSTALL_DIR/beenode-cli"
 
     # check INSTALL_DIR has beenoded and beenode-cli
     if [ ! -e $INSTALL_DIR/beenoded ]; then
@@ -307,27 +307,27 @@ _find_beenode_directory() {
         exit 1
     fi
 
-    if [ ! -e $DASH_CLI ]; then
+    if [ ! -e $BEENODE_CLI ]; then
         echo -e "${C_RED}${messages["beenodecli_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
         exit 1
     fi
 
-    DASH_CLI="$CACHE_CMD $INSTALL_DIR/beenode-cli"
+    BEENODE_CLI="$CACHE_CMD $INSTALL_DIR/beenode-cli"
 
 }
 
 
 _check_beenodeman_updates() {
-    GITHUB_DASHMAN_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/beenodeman/master/VERSION )
-    if [ ! -z "$GITHUB_DASHMAN_VERSION" ] && [ "$DASHMAN_VERSION" != "$GITHUB_DASHMAN_VERSION" ]; then
+    GITHUB_BEENODEMAN_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/beenodeman/master/VERSION )
+    if [ ! -z "$GITHUB_BEENODEMAN_VERSION" ] && [ "$BEENODEMAN_VERSION" != "$GITHUB_BEENODEMAN_VERSION" ]; then
         echo -e "\n"
-        echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_DASHMAN_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
+        echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_BEENODEMAN_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
 
         pending "${messages["sync_to_github"]} "
 
         if confirm " [${C_GREEN}y${C_NORM}/${C_RED}N${C_NORM}] $C_CYAN"; then
-            echo $DASHMAN_VERSION > $DASHMAN_GITDIR/PREVIOUS_VERSION
-            exec $DASHMAN_GITDIR/${0##*/} sync $COMMAND
+            echo $BEENODEMAN_VERSION > $BEENODEMAN_GITDIR/PREVIOUS_VERSION
+            exec $BEENODEMAN_GITDIR/${0##*/} sync $COMMAND
         fi
         die "${messages["exiting"]}"
     fi
@@ -370,7 +370,7 @@ _get_versions() {
         DOWNLOAD_FOR='RPi2'
     fi
 
-    GITHUB_RELEASE_JSON="$($curl_cmd $GITHUB_API_DASH/releases/latest | python -mjson.tool)"
+    GITHUB_RELEASE_JSON="$($curl_cmd $GITHUB_API_BEENODE/releases/latest | python -mjson.tool)"
     CHECKSUM_URL=$(echo "$GITHUB_RELEASE_JSON" | grep browser_download | grep SUMS.asc | cut -d'"' -f4)
     CHECKSUM_FILE=$( $curl_cmd $CHECKSUM_URL )
 
@@ -383,8 +383,8 @@ _get_versions() {
         die "\n${messages["err_could_not_get_version"]} -- ${messages["exiting"]}"
     fi
 
-    if [ -z "$DASH_CLI" ]; then DASH_CLI='echo'; fi
-    CURRENT_VERSION=$( $DASH_CLI --version | perl -ne '/v([0-9.]+)/; print $1;' 2>/dev/null ) 2>/dev/null
+    if [ -z "$BEENODE_CLI" ]; then BEENODE_CLI='echo'; fi
+    CURRENT_VERSION=$( $BEENODE_CLI --version | perl -ne '/v([0-9.]+)/; print $1;' 2>/dev/null ) 2>/dev/null
     for url in "${DOWNLOAD_URLS[@]}"
     do
         if [[ $url =~ .*${PLAT}-linux.* ]] ; then
@@ -397,26 +397,26 @@ _get_versions() {
 
 _check_beenoded_state() {
     _get_beenoded_proc_status
-    DASHD_RUNNING=0
-    DASHD_RESPONDING=0
-    if [ $DASHD_HASPID -gt 0 ] && [ $DASHD_PID -gt 0 ]; then
-        DASHD_RUNNING=1
+    BEENODED_RUNNING=0
+    BEENODED_RESPONDING=0
+    if [ $BEENODED_HASPID -gt 0 ] && [ $BEENODED_PID -gt 0 ]; then
+        BEENODED_RUNNING=1
     fi
-    $DASH_CLI getinfo >/dev/null 2>&1
+    $BEENODE_CLI getinfo >/dev/null 2>&1
     if [ $? -eq 0 ] || [ $? -eq 28 ]; then
-        DASHD_RESPONDING=1
+        BEENODED_RESPONDING=1
     fi
 }
 
 restart_beenoded(){
 
-    if [ $DASHD_RUNNING == 1 ]; then
+    if [ $BEENODED_RUNNING == 1 ]; then
         pending " --> ${messages["stopping"]} beenoded. ${messages["please_wait"]}"
-        $DASH_CLI stop 2>&1 >/dev/null
+        $BEENODE_CLI stop 2>&1 >/dev/null
         sleep 10
         killall -9 beenoded beenode-shutoff 2>/dev/null
         ok "${messages["done"]}"
-        DASHD_RUNNING=0
+        BEENODED_RUNNING=0
     fi
 
     pending " --> ${messages["deleting_cache_files"]}"
@@ -440,24 +440,24 @@ restart_beenoded(){
 
     pending " --> ${messages["starting_beenoded"]}"
     $INSTALL_DIR/beenoded 2>&1 >/dev/null
-    DASHD_RUNNING=1
+    BEENODED_RUNNING=1
     ok "${messages["done"]}"
 
     pending " --> ${messages["waiting_for_beenoded_to_respond"]}"
     echo -en "${C_YELLOW}"
-    DASHD_RESPONDING=0
-    while [ $DASHD_RUNNING == 1 ] && [ $DASHD_RESPONDING == 0 ]; do
+    BEENODED_RESPONDING=0
+    while [ $BEENODED_RUNNING == 1 ] && [ $BEENODED_RESPONDING == 0 ]; do
         echo -n "."
         _check_beenoded_state
         sleep 2
     done
-    if [ $DASHD_RUNNING == 0 ]; then
+    if [ $BEENODED_RUNNING == 0 ]; then
         die "\n - beenoded unexpectedly quit. ${messages["exiting"]}"
     fi
     ok "${messages["done"]}"
     pending " --> beenode-cli getinfo"
     echo
-    $DASH_CLI getinfo
+    $BEENODE_CLI getinfo
     echo
 
 }
@@ -535,9 +535,9 @@ update_beenoded(){
 
         # pummel it --------------------------------------------------------------
 
-        if [ $DASHD_RUNNING == 1 ]; then
+        if [ $BEENODED_RUNNING == 1 ]; then
             pending " --> ${messages["stopping"]} beenoded. ${messages["please_wait"]}"
-            $DASH_CLI stop >/dev/null 2>&1
+            $BEENODE_CLI stop >/dev/null 2>&1
             sleep 15
             killall -9 beenoded beenode-shutoff >/dev/null 2>&1
             ok "${messages["done"]}"
@@ -605,13 +605,13 @@ update_beenoded(){
 
         pending " --> ${messages["waiting_for_beenoded_to_respond"]}"
         echo -en "${C_YELLOW}"
-        DASHD_RUNNING=1
-        while [ $DASHD_RUNNING == 1 ] && [ $DASHD_RESPONDING == 0 ]; do
+        BEENODED_RUNNING=1
+        while [ $BEENODED_RUNNING == 1 ] && [ $BEENODED_RESPONDING == 0 ]; do
             echo -n "."
             _check_beenoded_state
             sleep 1
         done
-        if [ $DASHD_RUNNING == 0 ]; then
+        if [ $BEENODED_RUNNING == 0 ]; then
             die "\n - beenoded unexpectedly quit. ${messages["exiting"]}"
         fi
         ok "${messages["done"]}"
@@ -671,7 +671,7 @@ update_beenoded(){
 install_beenoded(){
 
     INSTALL_DIR=$HOME/.beenodecore
-    DASH_CLI="$INSTALL_DIR/beenode-cli"
+    BEENODE_CLI="$INSTALL_DIR/beenode-cli"
 
     if [ -e $INSTALL_DIR ] ; then
         die "\n - ${messages["preexisting_dir"]} $INSTALL_DIR ${messages["found"]} ${messages["run_reinstall"]} ${messages["exiting"]}"
@@ -718,7 +718,7 @@ install_beenoded(){
         RPCPASS=`echo $(dd if=/dev/urandom bs=32 count=1 2>/dev/null) | sha256sum | awk '{print $1}'`
         while read; do
             eval echo "$REPLY"
-        done < $DASHMAN_GITDIR/.beenode.conf.template > $INSTALL_DIR/beenode.conf
+        done < $BEENODEMAN_GITDIR/.beenode.conf.template > $INSTALL_DIR/beenode.conf
         ok "${messages["done"]}"
     fi
 
@@ -771,9 +771,9 @@ install_beenoded(){
 
     # pummel it --------------------------------------------------------------
 
-#    if [ $DASHD_RUNNING == 1 ]; then
+#    if [ $BEENODED_RUNNING == 1 ]; then
 #        pending " --> ${messages["stopping"]} beenoded. ${messages["please_wait"]}"
-#        $DASH_CLI stop >/dev/null 2>&1
+#        $BEENODE_CLI stop >/dev/null 2>&1
 #        sleep 15
 #        killall -9 beenoded beenode-shutoff >/dev/null 2>&1
 #        ok "${messages["done"]}"
@@ -873,19 +873,19 @@ install_beenoded(){
 
     pending " --> ${messages["launching"]} beenoded... "
     $INSTALL_DIR/beenoded > /dev/null
-    DASHD_RUNNING=1
+    BEENODED_RUNNING=1
     ok "${messages["done"]}"
 
     # probe it ---------------------------------------------------------------
 
     pending " --> ${messages["waiting_for_beenoded_to_respond"]}"
     echo -en "${C_YELLOW}"
-    while [ $DASHD_RUNNING == 1 ] && [ $DASHD_RESPONDING == 0 ]; do
+    while [ $BEENODED_RUNNING == 1 ] && [ $BEENODED_RESPONDING == 0 ]; do
         echo -n "."
         _check_beenoded_state
         sleep 2
     done
-    if [ $DASHD_RUNNING == 0 ]; then
+    if [ $BEENODED_RUNNING == 0 ]; then
         die "\n - beenoded unexpectedly quit. ${messages["exiting"]}"
     fi
     ok "${messages["done"]}"
@@ -930,39 +930,39 @@ install_beenoded(){
 }
 
 _get_beenoded_proc_status(){
-    DASHD_HASPID=0
+    BEENODED_HASPID=0
     if [ -e $INSTALL_DIR/beenoded.pid ] ; then
-        DASHD_HASPID=`ps --no-header \`cat $INSTALL_DIR/beenoded.pid 2>/dev/null\` | wc -l`;
+        BEENODED_HASPID=`ps --no-header \`cat $INSTALL_DIR/beenoded.pid 2>/dev/null\` | wc -l`;
     else
-        DASHD_HASPID=$(pidof beenoded)
+        BEENODED_HASPID=$(pidof beenoded)
         if [ $? -gt 0 ]; then
-            DASHD_HASPID=0
+            BEENODED_HASPID=0
         fi
     fi
-    DASHD_PID=$(pidof beenoded)
+    BEENODED_PID=$(pidof beenoded)
 }
 
 get_beenoded_status(){
 
     _get_beenoded_proc_status
 
-    DASHD_UPTIME=$(ps -p $DASHD_PID -o etime= 2>/dev/null | sed -e 's/ //g')
-    DASHD_UPTIME_TIMES=$(echo "$DASHD_UPTIME" | perl -ne 'chomp ; s/-/:/ ; print join ":", reverse split /:/' 2>/dev/null )
-    DASHD_UPTIME_SECS=$( echo "$DASHD_UPTIME_TIMES" | cut -d: -f1 )
-    DASHD_UPTIME_MINS=$( echo "$DASHD_UPTIME_TIMES" | cut -d: -f2 )
-    DASHD_UPTIME_HOURS=$( echo "$DASHD_UPTIME_TIMES" | cut -d: -f3 )
-    DASHD_UPTIME_DAYS=$( echo "$DASHD_UPTIME_TIMES" | cut -d: -f4 )
-    if [ -z "$DASHD_UPTIME_DAYS" ]; then DASHD_UPTIME_DAYS=0 ; fi
-    if [ -z "$DASHD_UPTIME_HOURS" ]; then DASHD_UPTIME_HOURS=0 ; fi
-    if [ -z "$DASHD_UPTIME_MINS" ]; then DASHD_UPTIME_MINS=0 ; fi
-    if [ -z "$DASHD_UPTIME_SECS" ]; then DASHD_UPTIME_SECS=0 ; fi
+    BEENODED_UPTIME=$(ps -p $BEENODED_PID -o etime= 2>/dev/null | sed -e 's/ //g')
+    BEENODED_UPTIME_TIMES=$(echo "$BEENODED_UPTIME" | perl -ne 'chomp ; s/-/:/ ; print join ":", reverse split /:/' 2>/dev/null )
+    BEENODED_UPTIME_SECS=$( echo "$BEENODED_UPTIME_TIMES" | cut -d: -f1 )
+    BEENODED_UPTIME_MINS=$( echo "$BEENODED_UPTIME_TIMES" | cut -d: -f2 )
+    BEENODED_UPTIME_HOURS=$( echo "$BEENODED_UPTIME_TIMES" | cut -d: -f3 )
+    BEENODED_UPTIME_DAYS=$( echo "$BEENODED_UPTIME_TIMES" | cut -d: -f4 )
+    if [ -z "$BEENODED_UPTIME_DAYS" ]; then BEENODED_UPTIME_DAYS=0 ; fi
+    if [ -z "$BEENODED_UPTIME_HOURS" ]; then BEENODED_UPTIME_HOURS=0 ; fi
+    if [ -z "$BEENODED_UPTIME_MINS" ]; then BEENODED_UPTIME_MINS=0 ; fi
+    if [ -z "$BEENODED_UPTIME_SECS" ]; then BEENODED_UPTIME_SECS=0 ; fi
 
-    DASHD_LISTENING=`netstat -nat | grep LIST | grep 9999 | wc -l`;
-    DASHD_CONNECTIONS=`netstat -nat | grep ESTA | grep 9999 | wc -l`;
-    DASHD_CURRENT_BLOCK=`$DASH_CLI getblockcount 2>/dev/null`
-    if [ -z "$DASHD_CURRENT_BLOCK" ] ; then DASHD_CURRENT_BLOCK=0 ; fi
-    DASHD_GETINFO=`$DASH_CLI getinfo 2>/dev/null`;
-    DASHD_DIFFICULTY=$(echo "$DASHD_GETINFO" | grep difficulty | awk '{print $2}' | sed -e 's/[",]//g')
+    BEENODED_LISTENING=`netstat -nat | grep LIST | grep 9999 | wc -l`;
+    BEENODED_CONNECTIONS=`netstat -nat | grep ESTA | grep 9999 | wc -l`;
+    BEENODED_CURRENT_BLOCK=`$BEENODE_CLI getblockcount 2>/dev/null`
+    if [ -z "$BEENODED_CURRENT_BLOCK" ] ; then BEENODED_CURRENT_BLOCK=0 ; fi
+    BEENODED_GETINFO=`$BEENODE_CLI getinfo 2>/dev/null`;
+    BEENODED_DIFFICULTY=$(echo "$BEENODED_GETINFO" | grep difficulty | awk '{print $2}' | sed -e 's/[",]//g')
 
     WEB_BLOCK_COUNT_CHAINZ=`$curl_cmd https://chainz.cryptoid.info/beenode/api.dws?q=getblockcount`;
     if [ -z "$WEB_BLOCK_COUNT_CHAINZ" ]; then
@@ -974,14 +974,14 @@ get_beenoded_status(){
         WEB_BLOCK_COUNT_DQA=0
     fi
 
-    WEB_DASHWHALE=`$curl_cmd https://www.beenodecentral.org/api/v1/public`;
-    if [ -z "$WEB_DASHWHALE" ]; then
+    WEB_BEENODEWHALE=`$curl_cmd https://www.beenodecentral.org/api/v1/public`;
+    if [ -z "$WEB_BEENODEWHALE" ]; then
         sleep 3
-        WEB_DASHWHALE=`$curl_cmd https://www.beenodecentral.org/api/v1/public`;
+        WEB_BEENODEWHALE=`$curl_cmd https://www.beenodecentral.org/api/v1/public`;
     fi
 
-    WEB_DASHWHALE_JSON_TEXT=$(echo $WEB_DASHWHALE | python -m json.tool)
-    WEB_BLOCK_COUNT_DWHALE=$(echo "$WEB_DASHWHALE_JSON_TEXT" | grep consensus_blockheight | awk '{print $2}' | sed -e 's/[",]//g')
+    WEB_BEENODEWHALE_JSON_TEXT=$(echo $WEB_BEENODEWHALE | python -m json.tool)
+    WEB_BLOCK_COUNT_DWHALE=$(echo "$WEB_BEENODEWHALE_JSON_TEXT" | grep consensus_blockheight | awk '{print $2}' | sed -e 's/[",]//g')
 
     WEB_ME=`$curl_cmd https://www.masternode.me/data/block_state.txt 2>/dev/null`;
     if [[ -z "$WEB_ME" ]] || [[ $(echo "$WEB_ME" | grep cloudflare | wc -l) -gt 0 ]]; then
@@ -994,17 +994,17 @@ get_beenoded_status(){
 
     CHECK_SYNC_AGAINST_HEIGHT=$(echo "$WEB_BLOCK_COUNT_CHAINZ $WEB_BLOCK_COUNT_ME $WEB_BLOCK_COUNT_DQA $WEB_BLOCK_COUNT_DWHALE" | tr " " "\n" | sort -rn | head -1)
 
-    DASHD_SYNCED=0
-    if [ $CHECK_SYNC_AGAINST_HEIGHT -ge $DASHD_CURRENT_BLOCK ] && [ $(($CHECK_SYNC_AGAINST_HEIGHT - 5)) -lt $DASHD_CURRENT_BLOCK ];then
-        DASHD_SYNCED=1
+    BEENODED_SYNCED=0
+    if [ $CHECK_SYNC_AGAINST_HEIGHT -ge $BEENODED_CURRENT_BLOCK ] && [ $(($CHECK_SYNC_AGAINST_HEIGHT - 5)) -lt $BEENODED_CURRENT_BLOCK ];then
+        BEENODED_SYNCED=1
     fi
 
-    DASHD_CONNECTED=0
-    if [ $DASHD_CONNECTIONS -gt 0 ]; then DASHD_CONNECTED=1 ; fi
+    BEENODED_CONNECTED=0
+    if [ $BEENODED_CONNECTIONS -gt 0 ]; then BEENODED_CONNECTED=1 ; fi
 
-    DASHD_UP_TO_DATE=0
+    BEENODED_UP_TO_DATE=0
     if [ $LATEST_VERSION == $CURRENT_VERSION ]; then
-        DASHD_UP_TO_DATE=1
+        BEENODED_UP_TO_DATE=1
     fi
 
     get_public_ips
@@ -1022,7 +1022,7 @@ get_beenoded_status(){
 
     # masternode (remote!) specific
 
-    MN_PROTX_RAW="$($DASH_CLI protx list valid 1 2>&1)"
+    MN_PROTX_RAW="$($BEENODE_CLI protx list valid 1 2>&1)"
     MN_PROTX_RECORD=`echo "$MN_PROTX_RAW" | grep -w -B6 -A19 $MASTERNODE_BIND_IP:9999 | sed -e 's/:9999/~9999/' -e 's/[":,{}]//g' -e 's/^ \+//' -e 's/ \+$//' -e 's/~9999/:9999/' -e '/^$/d' -e '/^[^ ]\+$/d'`
     MN_PROTX_QUEUE=`echo "$MN_PROTX_RAW" | egrep '(proTxHash|lastPaidHeight|PoSeRevivedHeight|registeredHeight)' | sed -e 's/[":,{}]//g' -e 's/^ \+//' -e 's/ \+$//' -e '/^$/d' -e '/^[^ ]\+$/d' | sed -e 'N;s/\n/ /' | sed -e 'N;s/\n/ /' | awk ' \
 {
@@ -1058,7 +1058,7 @@ get_beenoded_status(){
     MN_PROTX_SERVICE_VALID=0
 
     MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $HOME/.beenode{,core}/beenode.conf | wc -l 2>/dev/null)
-    #MN_STARTED=`$DASH_CLI masternode status 2>&1 | grep 'successfully started' | wc -l`
+    #MN_STARTED=`$BEENODE_CLI masternode status 2>&1 | grep 'successfully started' | wc -l`
     MN_REGISTERED=0
     [[ -z "$MN_PROTX_RECORD" ]] || MN_REGISTERED=1
 
@@ -1094,7 +1094,7 @@ get_beenoded_status(){
 
 
     NOW=`date +%s`
-    MN_LIST="$(cache_output /tmp/mnlist_cache '$DASH_CLI masternodelist full 2>/dev/null')"
+    MN_LIST="$(cache_output /tmp/mnlist_cache '$BEENODE_CLI masternodelist full 2>/dev/null')"
 
     MN_STATUS=$( grep $MASTERNODE_BIND_IP /tmp/mnlist_cache | sed -e 's/"//g' | awk '{print $2}' )
     MN_VISIBLE=$( test "$MN_STATUS" && echo 1 || echo 0 )
@@ -1102,7 +1102,7 @@ get_beenoded_status(){
     MN_UNHEALTHY=$( cat /tmp/mnlist_cache | grep -c EXPIRED )
     MN_TOTAL=$(( $MN_ENABLED + $MN_UNHEALTHY ))
 
-    MN_SYNC_STATUS=$( $DASH_CLI mnsync status )
+    MN_SYNC_STATUS=$( $BEENODE_CLI mnsync status )
     MN_SYNC_ASSET=$(echo "$MN_SYNC_STATUS" | grep 'AssetName' | awk '{print $2}' | sed -e 's/[",]//g' )
     MN_SYNC_COMPLETE=$(echo "$MN_SYNC_STATUS" | grep 'IsSynced' | grep 'true' | wc -l)
 
@@ -1205,28 +1205,28 @@ get_host_status(){
 
 print_status() {
 
-    DASHD_UPTIME_STRING="$DASHD_UPTIME_DAYS ${messages["days"]}, $DASHD_UPTIME_HOURS ${messages["hours"]}, $DASHD_UPTIME_MINS ${messages["mins"]}, $DASHD_UPTIME_SECS ${messages["secs"]}"
+    BEENODED_UPTIME_STRING="$BEENODED_UPTIME_DAYS ${messages["days"]}, $BEENODED_UPTIME_HOURS ${messages["hours"]}, $BEENODED_UPTIME_MINS ${messages["mins"]}, $BEENODED_UPTIME_SECS ${messages["secs"]}"
 
     pending "${messages["status_hostnam"]}" ; ok "$HOSTNAME"
     pending "${messages["status_uptimeh"]}" ; ok "$HOST_UPTIME_DAYS ${messages["days"]}, $HOST_LOAD_AVERAGE"
     pending "${messages["status_beenodedip"]}" ; [ $MASTERNODE_BIND_IP != 'none' ] && ok "$MASTERNODE_BIND_IP" || err "$MASTERNODE_BIND_IP"
     pending "${messages["status_beenodedve"]}" ; ok "$CURRENT_VERSION"
-    pending "${messages["status_uptodat"]}" ; [ $DASHD_UP_TO_DATE -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_running"]}" ; [ $DASHD_HASPID     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_uptimed"]}" ; [ $DASHD_RUNNING    -gt 0 ] && ok "$DASHD_UPTIME_STRING" || err "$DASHD_UPTIME_STRING"
-    pending "${messages["status_drespon"]}" ; [ $DASHD_RUNNING    -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_dlisten"]}" ; [ $DASHD_LISTENING  -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_dconnec"]}" ; [ $DASHD_CONNECTED  -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_uptodat"]}" ; [ $BEENODED_UP_TO_DATE -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_running"]}" ; [ $BEENODED_HASPID     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_uptimed"]}" ; [ $BEENODED_RUNNING    -gt 0 ] && ok "$BEENODED_UPTIME_STRING" || err "$BEENODED_UPTIME_STRING"
+    pending "${messages["status_drespon"]}" ; [ $BEENODED_RUNNING    -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_dlisten"]}" ; [ $BEENODED_LISTENING  -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_dconnec"]}" ; [ $BEENODED_CONNECTED  -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
     pending "${messages["status_dportop"]}" ; [ $PUBLIC_PORT_CLOSED  -lt 1 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_dconcnt"]}" ; [ $DASHD_CONNECTIONS   -gt 0 ] && ok "$DASHD_CONNECTIONS" || err "$DASHD_CONNECTIONS"
-    pending "${messages["status_dblsync"]}" ; [ $DASHD_SYNCED     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_dbllast"]}" ; [ $DASHD_SYNCED     -gt 0 ] && ok "$DASHD_CURRENT_BLOCK" || err "$DASHD_CURRENT_BLOCK"
+    pending "${messages["status_dconcnt"]}" ; [ $BEENODED_CONNECTIONS   -gt 0 ] && ok "$BEENODED_CONNECTIONS" || err "$BEENODED_CONNECTIONS"
+    pending "${messages["status_dblsync"]}" ; [ $BEENODED_SYNCED     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_dbllast"]}" ; [ $BEENODED_SYNCED     -gt 0 ] && ok "$BEENODED_CURRENT_BLOCK" || err "$BEENODED_CURRENT_BLOCK"
     pending "${messages["status_webchai"]}" ; [ $WEB_BLOCK_COUNT_CHAINZ -gt 0 ] && ok "$WEB_BLOCK_COUNT_CHAINZ" || err "$WEB_BLOCK_COUNT_CHAINZ"
     pending "${messages["status_webdark"]}" ; [ $WEB_BLOCK_COUNT_DQA    -gt 0 ] && ok "$WEB_BLOCK_COUNT_DQA" || err "$WEB_BLOCK_COUNT_DQA"
     pending "${messages["status_webbeenode"]}" ; [ $WEB_BLOCK_COUNT_DWHALE -gt 0 ] && ok "$WEB_BLOCK_COUNT_DWHALE" || err "$WEB_BLOCK_COUNT_DWHALE"
     pending "${messages["status_webmast"]}" ; [ $WEB_ME_FORK_DETECT -gt 0 ] && err "$WEB_ME" || ok "$WEB_ME"
-    pending "${messages["status_dcurdif"]}" ; ok "$DASHD_DIFFICULTY"
-    if [ $DASHD_RUNNING -gt 0 ] && [ $MN_CONF_ENABLED -gt 0 ] ; then
+    pending "${messages["status_dcurdif"]}" ; ok "$BEENODED_DIFFICULTY"
+    if [ $BEENODED_RUNNING -gt 0 ] && [ $MN_CONF_ENABLED -gt 0 ] ; then
     #pending "${messages["status_mnstart"]}" ; [ $MN_STARTED -gt 0  ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
     pending "${messages["status_mnregis"]}" ; [ $MN_REGISTERED -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
     pending "${messages["status_mnvislo"]}" ; [ $MN_VISIBLE -gt 0  ] && ok "${messages["YES"]}" || err "${messages["NO"]}"

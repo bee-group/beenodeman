@@ -91,5 +91,5 @@ def verify_beenode_signature(generator, address, message, signature):
     minus_e = -e % order
     inv_r = numbertheory.inverse_mod(r, order)
     Q = inv_r * (R * s + G * minus_e)
-    key = Key(public_pair=(Q.x(), Q.y()), netcode='DASH')
+    key = Key(public_pair=(Q.x(), Q.y()), netcode='BEENODE')
     return key.address(use_uncompressed=not compressed) == address

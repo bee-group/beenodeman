@@ -22,8 +22,8 @@ git_dir = os.path.abspath(
             os.path.abspath(__file__)),
         '..'))
 beenode_conf_dir = os.path.join(os.getenv('HOME'), '.beenodecore')
-beenode_cli_path = os.getenv('DASH_CLI')
-if os.getenv('DASHMAN_PID') is None:
+beenode_cli_path = os.getenv('BEENODE_CLI')
+if os.getenv('BEENODEMAN_PID') is None:
     quit("--> please run using 'beenodeman vote'")
 
 sys.path.append(git_dir + '/lib')

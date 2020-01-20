@@ -36,25 +36,25 @@ shift $(($OPTIND - 1))
 
 # load common functions ------------------------------------------------------
 
-DASHMAN_BIN=$(readlink -f $0)
-DASHMAN_GITDIR=$(readlink -f ${DASHMAN_BIN%%/bin/${DASHMAN_BIN##*/}})
-source $DASHMAN_GITDIR/lib/beenodeman_functions.sh
+BEENODEMAN_BIN=$(readlink -f $0)
+BEENODEMAN_GITDIR=$(readlink -f ${BEENODEMAN_BIN%%/bin/${BEENODEMAN_BIN##*/}})
+source $BEENODEMAN_GITDIR/lib/beenodeman_functions.sh
 
 # load language packs --------------------------------------------------------
 
 declare -A messages
 
 # set all default strings
-source $DASHMAN_GITDIR/lang/en_US.sh
+source $BEENODEMAN_GITDIR/lang/en_US.sh
 
 # override if configured
 lang_type=${LANG%%\.*}
-[[ -e $DASHMAN_GITDIR/lang/$lang_type.sh ]] && source $DASHMAN_GITDIR/lang/$lang_type.sh
+[[ -e $BEENODEMAN_GITDIR/lang/$lang_type.sh ]] && source $BEENODEMAN_GITDIR/lang/$lang_type.sh
 
 # process switch overrides ---------------------------------------------------
 
 # show version and exit if requested
-[[ $VERSION || $1 == 'version' ]] && echo $DASHMAN_VERSION && exit 0
+[[ $VERSION || $1 == 'version' ]] && echo $BEENODEMAN_VERSION && exit 0
 
 # show help and exit if requested or no command supplied - TODO make command specific
 [[ $HELP || -z $1 ]] && usage && exit 0
@@ -64,7 +64,7 @@ _check_dependencies $@
 
 # have command, will travel... -----------------------------------------------
 
-echo -e "${C_CYAN}${messages["beenodeman_version"]} $DASHMAN_VERSION$DASHMAN_CHECKOUT${C_NORM} - ${C_GREEN}$(date)${C_NORM}"
+echo -e "${C_CYAN}${messages["beenodeman_version"]} $BEENODEMAN_VERSION$BEENODEMAN_CHECKOUT${C_NORM} - ${C_GREEN}$(date)${C_NORM}"
 
 # do awesome stuff -----------------------------------------------------------
 COMMAND=''
@@ -151,7 +151,7 @@ case "$1" in
             ;;
         sync)
             COMMAND=$1
-            cd $DASHMAN_GITDIR
+            cd $BEENODEMAN_GITDIR
             git fetch --prune origin +refs/tags/*:refs/tags/*
             git remote update -p
             if [ -z $(git config user.email) ] ; then
@@ -162,28 +162,28 @@ case "$1" in
             git checkout master
             git reset --hard origin/master
 
-            if [ -e $DASHMAN_GITDIR/PREVIOUS_VERSION ]; then
+            if [ -e $BEENODEMAN_GITDIR/PREVIOUS_VERSION ]; then
                 echo '--------------'
-                cat_until "^$( cat $DASHMAN_GITDIR/PREVIOUS_VERSION ) " $DASHMAN_GITDIR/CHANGELOG.md | sed \
+                cat_until "^$( cat $BEENODEMAN_GITDIR/PREVIOUS_VERSION ) " $BEENODEMAN_GITDIR/CHANGELOG.md | sed \
                     -e "/^0\./s/^/$(echo -e $C_YELLOW)/"    -e "/^0\./s/$/$(echo -e $C_NORM)/" \
                     -e "/enh - /s/^/$(echo -e $C_GREEN)/"   -e "/enh - /s/$/$(echo -e $C_NORM)/" \
                     -e "/compat - /s/^/$(echo -e $C_YELLOW)/" -e "/compat - /s/$/$(echo -e $C_YELLOW)/" \
                     -e "/config - /s/^/$(echo -e $C_CYAN)/" -e "/config - /s/$/$(echo -e $C_NORM)/" \
                     -e "/bugfix - /s/^/$(echo -e $C_RED)/"  -e "/bugfix - /s/$/$(echo -e $C_NORM)/"
                 echo '--------------'
-                rm $DASHMAN_GITDIR/PREVIOUS_VERSION
+                rm $BEENODEMAN_GITDIR/PREVIOUS_VERSION
             fi
 
             if [ ! -z "$2" ]; then
                 self=${0##*/};
                 shift;
-                exec $DASHMAN_GITDIR/$self $@
+                exec $BEENODEMAN_GITDIR/$self $@
             fi
             quit "${messages["quit_uptodate"]}"
             ;;
         branch)
             COMMAND=$1
-            cd $DASHMAN_GITDIR
+            cd $BEENODEMAN_GITDIR
             git fetch --prune origin +refs/tags/*:refs/tags/*
             git remote update -p
             if [ -z $(git config user.email) ] ; then
@@ -209,8 +209,8 @@ case "$1" in
             _check_beenoded_state
             ok " ${messages["done"]}"
             echo
-            export DASH_CLI DASHMAN_PID=$$
-            /usr/bin/env python $DASHMAN_GITDIR/bin/beenodevote.py
+            export BEENODE_CLI BEENODEMAN_PID=$$
+            /usr/bin/env python $BEENODEMAN_GITDIR/bin/beenodevote.py
             quit 'Exiting.'
             ;;
         status)
